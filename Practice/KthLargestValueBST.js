@@ -14,12 +14,13 @@ function findKthLargestValueInBst(tree, k) {
         if (tree === null) return;
 
         reverseTraverse(tree.right)
-        if (count === k) return;
-        kthLargestValue = tree.value
-        count++;
+        count++
+        if (count === k) {
+            kthLargestValue = tree.value;
+            return;
+        }
         reverseTraverse(tree.left)
     }
-
     reverseTraverse(tree);
     return kthLargestValue;
 }
