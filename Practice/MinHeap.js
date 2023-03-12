@@ -4,19 +4,30 @@ class MinHeap {
     }
 
     buildHeap(array) {
+        const firstParentIdx = Math.floor((array.length - 2) / 2);
+        for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {
+            this.siftDown(currentIdx, array.length - 1, array);
+        }
+        return array;
     }
 
     siftDown(currentIdx, endIdx, heap) {
         let childOneIdx = currentIdx * 2 + 1;
-        let childTwoIdx = currentIdx * 2 + 2;
-        let smallerChildIdx = heap[childOneIdx] < heap[childTwoIdx] ? childOneIdx : childTwoIdx;
-
-        while (currentIdx > endIdx && heap[currentIdx] > heap[childOneIdx] && heap[currentIdx] > heap[childTwoIdx]) {
-            this.swap(currentIdx, smallerChildIdx, heap);
-            currentIdx = smallerChildIdx;
-            childOneIdx = currentIdx * 2 + 1;
-            childTwoIdx = currentIdx * 2 + 2;
-            smallerChildIdx = heap[childOneIdx] < heap[childTwoIdx] ? childOneIdx : childTwoIdx;
+        while (childOneIdx <= endIdx) {
+            const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;
+            let swapIdx;
+            if (childTwoIdx !== -1 && heap[childTwoIdx] < heap[childOneIdx]) {
+                swapIdx = childTwoIdx;
+            } else {
+                swapIdx = childOneIdx;
+            }
+            if (heap[swapIdx] < heap[currentIdx]) {
+                this.swap(currentIdx, swapIdx, heap);
+                currentIdx = swapIdx;
+                childOneIdx = currentIdx * 2 + 1;
+            } else {
+                return;
+            }
         }
     }
 
@@ -34,9 +45,15 @@ class MinHeap {
     }
 
     remove() {
+        this.swap(0, this.heap.length - 1, this.heap);
+        const removed = this.heap.pop();
+        this.siftDown(0, this.heap.length - 1, this.heap);
+        return removed;
     }
 
     insert(value) {
+        this.heap.push(value);
+        this.siftUp(this.heap.length - 1, this.heap)
     }
 
     swap(i, j, heap) {
